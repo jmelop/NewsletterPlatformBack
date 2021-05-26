@@ -1,4 +1,5 @@
 const userModel = require("./users.model");
+var mongoose = require("mongoose");
 
 module.exports = {
   getAllUsers,
@@ -18,10 +19,16 @@ function getAllUsers(req, res) {
 }
 
 function getById(req, res) {
-  userModel
-    .findById(req.params.id)
-    .then((r) => res.json(r))
-    .catch((err) => res.status(404).json("Usuario no encotrado"));
+  let userId = mongoose.Types.ObjectId.isValid(req.params.id);
+
+  if (userId) {
+    userModel
+      .findById(req.params.id)
+      .then((r) => res.json(r))
+      .catch((err) => res.status(500).json("Error en la base de datos"));
+  } else {
+    res.status(404).send("Ningun usuario encontrado");
+  }
 }
 
 function createUser(req, res) {
@@ -40,15 +47,26 @@ function createUser(req, res) {
   }
 }
 function editPatch(req, res) {
-  userModel
-    .findByIdAndUpdate(req.params.id, req.body)
-    .then((r) => res.json(r))
-    .catch((err) => res.status(404).json("Usuario no encotrado"));
+  let userId = mongoose.Types.ObjectId.isValid(req.params.id);
+
+  if (userId) {
+    userModel
+      .findByIdAndUpdate(req.params.id, req.body)
+      .then((r) => res.json(r))
+      .catch((err) => res.status(500).json("Error en la base de datos"));
+  } else {
+    res.status(404).send("Ningun usuario encontrado");
+  }
 }
 
 function deleteUser(req, res) {
-  userModel
-    .findByIdAndDelete(req.params.id)
-    .then((r) => res.json(r))
-    .catch((err) => res.status(404).json("Usuario no encotrado"));
+  let userId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (userId) {
+    userModel
+      .findByIdAndDelete(req.params.id)
+      .then((r) => res.json(r))
+      .catch((err) => res.status(500).json("Error en la base de datos"));
+  } else {
+    res.status(404).send("Ningun usuario encontrado");
+  }
 }

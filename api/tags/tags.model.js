@@ -7,5 +7,5 @@ var tagsSchema = mongoose.Schema({
   },
 });
 
-var tweet = mongoose.model("tag", tagsSchema);
-module.exports = tweet;
+var tags = mongoose.model("tag", tagsSchema);
+module.exports = tags;

@@ -13,7 +13,9 @@ mongoose.connect("mongodb://localhost/appNewsletter", {
 //router
 var routerUser = require("./api/users/users.router.js");
 var routerNews = require("./api/news/news.router.js");
+var routerTags = require("./api/tags/tags.router.js");
 app.use("/users", routerUser);
 app.use("/news", routerNews);
+app.use("/tags", routerTags);
 
 app.listen(4000);
