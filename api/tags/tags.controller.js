@@ -50,7 +50,7 @@ function deleteTag(req, res) {
   let tagId = mongoose.Types.ObjectId.isValid(req.params.id);
   if (tagId) {
     tagsModel
-      .finByIdAndDelete(req.params.id)
+      .findByIdAndDelete(req.params.id)
       .then((r) => {
         res.json(r);
       })
