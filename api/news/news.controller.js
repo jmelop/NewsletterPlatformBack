@@ -6,12 +6,8 @@ module.exports = {
   getAllnews,
   getnewById,
   deletenew,
-  deleteOwnernews,
+  editNew,
 };
-
-function deleteOwnernews(owner) {
-  news = news.filter((u) => u.owner != owner);
-}
 
 function getAllnews(req, res) {
   newsModel
@@ -37,10 +33,10 @@ function getnewById(req, res) {
 }
 
 function createnew(req, res) {
-  var newnew = new newsModel(req.body);
-  var error = newnew.validateSync();
+  var createNew = new newsModel(req.body);
+  var error = createNew.validateSync();
   if (!error) {
-    newnew
+    createNew
       .save()
       .then((u) => {
         res.json(u);
@@ -54,9 +50,26 @@ function createnew(req, res) {
 function deletenew(req, res) {
   let newId = mongoose.Types.ObjectId.isValid(req.params.id);
   if (newId) {
-    newsModel.deleteOne({ _id: req.params.id }).then((u) => {
-      res.json(u);
-    });
+    newsModel
+      .findByIdAndDelete(req.params.id)
+      .then((u) => {
+        res.json(u);
+      })
+      .catch((err) => res.status(500).json(err));
+  } else {
+    res.status(404).send("Ningun new encontrado");
+  }
+}
+
+function editNew(req, res) {
+  let newId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (newId) {
+    newsModel
+      .findByIdAndUpdate(req.params.id, req.body)
+      .then((u) => {
+        res.json(u);
+      })
+      .catch((err) => res.status(500).json(err));
   } else {
     res.status(404).send("Ningun new encontrado");
   }

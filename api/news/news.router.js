@@ -7,6 +7,8 @@ router.get("/:id", newsController.getnewById);
 
 router.post("/", newsController.createnew);
 
+router.patch("/:id", newsController.editNew);
+
 router.delete("/:id", newsController.deletenew);
 
 module.exports = router;
