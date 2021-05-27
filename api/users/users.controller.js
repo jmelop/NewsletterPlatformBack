@@ -43,7 +43,7 @@ function createUser(req, res) {
       })
       .catch((err) => res.status(500).json(err));
   } else {
-    res.json(error.errors);
+    res.status(403).send("Email no valido");
   }
 }
 function editPatch(req, res) {
