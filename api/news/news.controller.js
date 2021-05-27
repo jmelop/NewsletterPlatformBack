@@ -43,7 +43,15 @@ function createnew(req, res) {
       })
       .catch((err) => res.status(500).json(err));
   } else {
-    res.status(404).send("Tags obligatorios");
+    if (error.errors.tag) {
+      res.status(404).send("Tags obligatorios");
+    }
+    if (error.errors.title) {
+      res.status(404).send("Titulo obligatorios");
+    }
+    if (error.errors.body) {
+      res.status(404).send("body obligatorios");
+    }
   }
 }
 

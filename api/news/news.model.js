@@ -4,10 +4,12 @@ var newsSchema = mongoose.Schema({
   title: {
     type: String,
     minLength: [2, "Título demasiado corto"],
+    required: true,
   },
   body: {
     type: String,
     minLength: [2, "Body demasiado corto"],
+    required: true,
   },
   link: {
     type: String,

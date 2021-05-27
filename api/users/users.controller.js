@@ -41,9 +41,18 @@ function createUser(req, res) {
       .then((u) => {
         res.json(u);
       })
-      .catch((err) => res.status(500).json(err));
+      .catch((err) => {
+        if (err.keyValue.email) {
+          res.status(404).send("Email repetido");
+        }
+      });
   } else {
-    res.status(403).send("Email no valido");
+    if (error.errors.role) {
+      res.status(403).send("Rol no valido");
+    }
+    if (error.errors.email) {
+      res.status(403).send("email no valido");
+    }
   }
 }
 function editPatch(req, res) {
