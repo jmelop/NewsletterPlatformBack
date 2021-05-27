@@ -44,6 +44,8 @@ function createUser(req, res) {
       .catch((err) => {
         if (err.keyValue.email) {
           res.status(404).send("Email repetido");
+        } else {
+          res.status(500).send("Fallo en el servidor");
         }
       });
   } else {
