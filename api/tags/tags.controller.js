@@ -42,7 +42,7 @@ function createTag(req, res) {
       .then((u) => res.json(u))
       .catch((err) => res.status(500).json(err));
   } else {
-    res.json(error.errors);
+    res.status(404).send("Ha ocurrido un error");
   }
 }
 
