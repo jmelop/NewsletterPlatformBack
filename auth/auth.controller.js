@@ -10,9 +10,11 @@ function login(req, res) {
     if (!r) {
       res.status(404).send("No existe ningun usuario con ese email");
     }
+
     if (!bcrypt.compareSync(password, r.password)) {
       res.status(404).send("Email o pasdword no válida");
     }
+
     const token = jwt.sign(
       { email: r.email, role: r.role },
       process.env.TOKEN_PASSWORD

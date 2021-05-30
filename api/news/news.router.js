@@ -1,14 +1,34 @@
 const newsController = require("./news.controller");
-var router = require("express").Router();
+const router = require("express").Router();
+const jwt = require("jsonwebtoken");
 
-router.get("/", newsController.getAllnews);
+function validAuth(req, res, next) {
+  if (!req.headers.authorization) {
+    return res.status(403).send("No tienes autorización");
+  }
+  const token = req.headers.authorization;
+  jwt.verify(token, process.env.TOKEN_PASSWORD, (err, data) => {
+    if (err) {
+      return res.status(403).send("Token invalido");
+    }
+    console.log(data);
+    req.currentUser = data;
+    if (req.currentUser.role == "admin") {
+      next();
+    } else {
+      res.status(403).send("No tienes permisos");
+    }
+  });
+}
 
-router.get("/:id", newsController.getnewById);
+router.get("/", validAuth, newsController.getAllnews);
 
-router.post("/", newsController.createnew);
+router.get("/:id", validAuth, newsController.getnewById);
 
-router.patch("/:id", newsController.editNew);
+router.post("/", validAuth, newsController.createnew);
 
-router.delete("/:id", newsController.deletenew);
+router.patch("/:id", validAuth, newsController.editNew);
+
+router.delete("/:id", validAuth, newsController.deletenew);
 
 module.exports = router;

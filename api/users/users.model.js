@@ -22,10 +22,10 @@ var usersSchema = mongoose.Schema({
     enum: ["admin", "user"],
     default: "user",
   },
-  /* password: {
+  password: {
     type: String,
     required: [true, "Password necesaria"],
-  }, */
+  },
   tag: {
     type: Array,
     default: [],

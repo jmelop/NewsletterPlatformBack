@@ -22,7 +22,10 @@ var authSchema = mongoose.Schema({
     enum: ["admin", "user"],
     default: "user",
   },
-  password: {},
+  password: {
+    type: String,
+    required: [true, "Password requerida"],
+  },
   tag: {
     type: Array,
     default: [],
