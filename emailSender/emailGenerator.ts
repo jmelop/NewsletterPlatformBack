@@ -1,6 +1,6 @@
 //POR QUE TENGO QUE USAR FS2???? esto de que va junior
-fs = require("fs");
-let bodyTemplate = fs.readFileSync("./templates/newsBody.html").toString();
+const fs2 = require("fs");
+let bodyTemplate = fs2.readFileSync("./templates/newsBody.html").toString();
 let newsTests = [
     {
         tag: ["PYMES"],
