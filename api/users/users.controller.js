@@ -12,11 +12,7 @@ module.exports = {
 };
 
 function deleteTagUser(id) {
-  user = userModel.find();
-  user
-    .updateMany({}, { $pull: { tags: id } })
-    .then((r) => console.log(r))
-    .catch((err) => console.log(err));
+  return userModel.updateMany({ tags: id }, { $pull: { tags: id } });
 }
 
 function getAllUsers(req, res) {

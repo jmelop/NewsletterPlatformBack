@@ -54,8 +54,9 @@ function deleteTag(req, res) {
     tagsModel
       .findByIdAndDelete(req.params.id)
       .then((r) => {
-        res.json(r);
-        deleteTagUser(req.params.id);
+        deleteTagUser(req.params.id).then((response) => {
+          res.json(r);
+        });
       })
       .catch((err) => res.status(500).json(err));
   } else {
