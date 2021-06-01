@@ -8,12 +8,45 @@ module.exports = {
   editPatch,
   deleteUser,
   deleteSelfUser,
+  deleteTagUser,
 };
+
+function deleteTagUser(id) {
+  /*userModel.find().then((u) => {
+    u.forEach((user) =>
+      user.tag.forEach((t) => {
+        if (t._id == id) {
+          user.tag = user.tag.filter((tag) => tag._id != id);
+          console.log(user);
+          const user1 = {
+            role: user.role,
+            tag: user.tag,
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            __v: 0,
+          };
+          userModel
+            .findOneAndReplace({ _id: user._id }, user1)
+            .then((r) => console.log(r))
+            .catch((err) => console.log(err));
+        }
+      })
+    );
+  }); */
+  user = userModel.find();
+  user
+    .updateMany({}, { $pull: { tags: id } })
+    .then((r) => console.log(r))
+    .catch((err) => console.log(err));
+}
 
 function getAllUsers(req, res) {
   if (req.currentUser.role === "admin") {
     userModel
       .find()
+      .populate("tags")
       .then((response) => {
         res.json(response);
       })

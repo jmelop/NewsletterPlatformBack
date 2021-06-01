@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-
 var usersSchema = mongoose.Schema({
   name: {
     type: String,
@@ -26,10 +25,7 @@ var usersSchema = mongoose.Schema({
     type: String,
     required: [true, "Password necesaria"],
   },
-  tag: {
-    type: Array,
-    default: [],
-  },
+  tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag" }],
 });
 
 var user = mongoose.model("user", usersSchema);

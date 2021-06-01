@@ -1,6 +1,7 @@
 const tagsModel = require("./tags.model");
 const mongoose = require("mongoose");
 const { response } = require("express");
+const { deleteTagUser } = require("../users/users.controller");
 
 module.exports = {
   getAllTags,
@@ -22,6 +23,7 @@ function getAllTags(req, res) {
 function getTagById(req, res) {
   let tagId = mongoose.Types.ObjectId.isValid(req.params.id);
   if (tagId) {
+    deleteTagUser(req.params.id);
     tagsModel
       .findById(req.params.id)
       .then((r) => {
@@ -53,6 +55,7 @@ function deleteTag(req, res) {
       .findByIdAndDelete(req.params.id)
       .then((r) => {
         res.json(r);
+        deleteTagUser(req.params.id);
       })
       .catch((err) => res.status(500).json(err));
   } else {
