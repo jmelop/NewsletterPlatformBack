@@ -19,7 +19,7 @@ function getAllUsers(req, res) {
   if (req.currentUser.role === "admin") {
     userModel
       .find()
-      .populate("tag")
+      .populate("tags")
       .then((response) => {
         res.json(response);
       })
