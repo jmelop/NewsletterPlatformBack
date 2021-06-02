@@ -30,4 +30,6 @@ router.delete("/:id", validAuth, userController.deleteUser);
 
 router.delete("/deleteSelf/:id", validAuth, userController.deleteSelfUser);
 
+router.patch("/updateTags/:id", validAuth, userController.editPatch);
+
 module.exports = router;

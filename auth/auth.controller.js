@@ -6,25 +6,30 @@ module.exports = { login, register };
 
 function login(req, res) {
   const { email, password } = req.body;
-  authModel.findOne({ email }).then((r) => {
-    if (!r) {
-      res.status(404).send("No existe ningun usuario con ese email");
-    }
+  authModel
+    .findOne({ email })
+    .then((r) => {
+      if (!r) {
+        res.status(404).send("No existe ningun usuario con ese email");
+      } else if (r.password == null) {
+        res.status(404).send("Email o pasdword no válida");
+      } else {
+        if (!bcrypt.compareSync(password, r.password)) {
+          res.status(404).send("Email o pasdword no válida");
+        } else {
+          const token = jwt.sign(
+            { email: r.email, role: r.role },
+            process.env.TOKEN_PASSWORD
+          );
 
-    if (!bcrypt.compareSync(password, r.password)) {
-      res.status(404).send("Email o pasdword no válida");
-    }
-
-    const token = jwt.sign(
-      { email: r.email, role: r.role },
-      process.env.TOKEN_PASSWORD
-    );
-
-    return res.json({
-      user: r,
-      token: token,
-    });
-  });
+          return res.json({
+            user: r,
+            token: token,
+          });
+        }
+      }
+    })
+    .catch((err) => console.log(err));
 }
 
 function register(req, res) {

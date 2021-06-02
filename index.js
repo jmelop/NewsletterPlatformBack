@@ -42,4 +42,4 @@ app.use("/news", routerNews);
 app.use("/tags", routerTags);
 app.use("/", routerAuth);
 
-app.listen(4000);
+app.listen(4000, () => console.log("Ready at port 4000"));

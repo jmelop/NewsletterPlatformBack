@@ -19,7 +19,7 @@ function getAllUsers(req, res) {
   if (req.currentUser.role === "admin") {
     userModel
       .find()
-      .populate("tags")
+      .populate("tag")
       .then((response) => {
         res.json(response);
       })
@@ -126,4 +126,11 @@ function deleteSelfUser(req, res) {
   } else {
     res.status(404).send("Ningun usuario encontrado");
   }
+}
+
+function deleteSelfTags(req, res) {
+  userModel.findById(req.params.id).then((r) => {
+    if (r.email === req.currentUser.email) {
+    }
+  });
 }
