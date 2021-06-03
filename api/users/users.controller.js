@@ -16,7 +16,7 @@ function deleteTagUser(id) {
 }
 
 function getAllUsers(req, res) {
-  if (req.currentUser.role === "admin") {
+  if (req.currentUser.role === "user") {
     userModel
       .find()
       .populate("tags")
@@ -36,6 +36,7 @@ function getById(req, res) {
     if (userId) {
       userModel
         .findById(req.params.id)
+        .populate("tags")
         .then((r) => res.json(r))
         .catch((err) => res.status(500).json("Error en la base de datos"));
     } else {
