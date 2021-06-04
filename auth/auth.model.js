@@ -26,10 +26,7 @@ var authSchema = mongoose.Schema({
     type: String,
     required: [true, "Password requerida"],
   },
-  tag: {
-    type: Array,
-    default: [],
-  },
+  tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag" }],
 });
 
 var auth = mongoose.model("users", authSchema);

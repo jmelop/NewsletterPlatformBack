@@ -16,7 +16,7 @@ function deleteTagUser(id) {
 }
 
 function getAllUsers(req, res) {
-  if (req.currentUser.role === "user") {
+  if (req.currentUser.role === "admin") {
     userModel
       .find()
       .populate("tags")
