@@ -43,6 +43,7 @@ function register(req, res) {
         password: passwordHash,
         name: newUser.name,
         role: newUser.role,
+        tags: newUser.tags,
       })
       .then((r) => {
         res.send(newUser);
