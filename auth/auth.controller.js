@@ -46,7 +46,7 @@ function register(req, res) {
         tags: newUser.tags,
       })
       .then((r) => {
-        res.send(newUser);
+        res.send(r);
       })
       .catch((err) => {
         if (err.keyValue.email) {

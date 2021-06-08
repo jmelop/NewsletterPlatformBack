@@ -1,5 +1,6 @@
 const userModel = require("./users.model");
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   getAllUsers,
@@ -52,10 +53,17 @@ function createUser(req, res) {
 
   var error = newUser.validateSync();
   if (!error) {
-    newUser
-      .save()
-      .then((u) => {
-        res.json(u);
+    let passwordHash = bcrypt.hashSync(newUser.password, 4);
+    userModel
+      .create({
+        email: newUser.email,
+        password: passwordHash,
+        name: newUser.name,
+        role: newUser.role,
+        tags: newUser.tags,
+      })
+      .then((r) => {
+        res.json(r);
       })
       .catch((err) => {
         if (err.keyValue.email) {
@@ -65,11 +73,10 @@ function createUser(req, res) {
         }
       });
   } else {
-    if (error.errors.role) {
-      res.status(403).send("Rol no valido");
-    }
     if (error.errors.email) {
       res.status(403).send("email no valido");
+    } else {
+      res.status(400).send("Ha ocurrido un error");
     }
   }
 }
