@@ -21,7 +21,7 @@ function validAuth(req, res, next) {
 
 router.get("/", validAuth, userController.getAllUsers);
 
-router.get("/owner", validAuth, userController.getByOwnerId);
+router.get("/owner/:id", validAuth, userController.getByOwnerId);
 
 router.get("/:id", validAuth, userController.getById);
 

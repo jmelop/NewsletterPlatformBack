@@ -8,6 +8,7 @@ module.exports = {
   editTag,
   deleteTag,
   createTag,
+  getByOwnerId,
 };
 
 function getAllTags(req, res) {
@@ -75,5 +76,16 @@ function editTag(req, res) {
       .catch((err) => res.status(500).json(err));
   } else {
     res.status(404).send("Ningun tag encontrado");
+  }
+}
+
+function getByOwnerId(req, res) {
+  if (req.currentUser.role === "admin") {
+    tagsModel
+      .find({ owner: req.params.id })
+      .then((r) => res.send(r))
+      .catch((err) => res.status(404).send("tag no encontrado"));
+  } else {
+    res.status(403).send("No eres admin");
   }
 }

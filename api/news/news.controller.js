@@ -7,6 +7,7 @@ module.exports = {
   getnewById,
   deletenew,
   editNew,
+  getByOwnerId,
 };
 
 function getAllnews(req, res) {
@@ -102,6 +103,17 @@ function editNew(req, res) {
     } else {
       res.status(404).send("Ningun new encontrado");
     }
+  } else {
+    res.status(403).send("No eres admin");
+  }
+}
+
+function getByOwnerId(req, res) {
+  if (req.currentUser.role === "admin") {
+    newsModel
+      .find({ owner: req.params.id })
+      .then((r) => res.send(r))
+      .catch((err) => res.status(404).send("Noticia no encontrada"));
   } else {
     res.status(403).send("No eres admin");
   }

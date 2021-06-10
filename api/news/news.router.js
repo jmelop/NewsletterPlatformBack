@@ -20,6 +20,8 @@ function validAuth(req, res, next) {
 
 router.get("/", validAuth, newsController.getAllnews);
 
+router.get("/owner/:id", validAuth, newsController.getByOwnerId);
+
 router.get("/:id", validAuth, newsController.getnewById);
 
 router.post("/", validAuth, newsController.createnew);

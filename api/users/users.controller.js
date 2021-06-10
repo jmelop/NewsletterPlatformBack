@@ -169,7 +169,7 @@ function editSelf(req, res) {
 function getByOwnerId(req, res) {
   if (req.currentUser.role === "admin") {
     userModel
-      .find({ owner: req.currentUser.id })
+      .find({ owner: req.params.id })
       .then((r) => res.send(r))
       .catch((err) => res.status(404).send("Usuario no encontrado"));
   } else {

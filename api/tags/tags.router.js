@@ -24,6 +24,8 @@ function validAuth(req, res, next) {
 
 router.get("/", validAuth, tagsController.getAllTags);
 
+router.get("/owner/:id", validAuth, tagsController.getByOwnerId);
+
 router.get("/:id", validAuth, tagsController.getTagById);
 
 router.post("/", validAuth, tagsController.createTag);
