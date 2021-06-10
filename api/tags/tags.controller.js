@@ -83,6 +83,7 @@ function getByOwnerId(req, res) {
   if (req.currentUser.role === "admin") {
     tagsModel
       .find({ owner: req.params.id })
+      .populate("owner")
       .then((r) => res.send(r))
       .catch((err) => res.status(404).send("tag no encontrado"));
   } else {

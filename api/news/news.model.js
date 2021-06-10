@@ -16,7 +16,7 @@ var newsSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    tag: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag", require: true }],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag", require: true }],
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",

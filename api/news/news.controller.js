@@ -14,7 +14,7 @@ function getAllnews(req, res) {
   if (req.currentUser.role === "admin" || req.currentUser.role === "user") {
     newsModel
       .find()
-      .populate("tag")
+      .populate("tags")
       .populate("owner")
       .then((response) => {
         res.json(response);
@@ -31,7 +31,7 @@ function getnewById(req, res) {
     if (newId) {
       newsModel
         .findById(req.params.id)
-        .populate("tag")
+        .populate("tags")
         .populate("owner")
         .then((response) => {
           res.json(response);
@@ -112,6 +112,8 @@ function getByOwnerId(req, res) {
   if (req.currentUser.role === "admin") {
     newsModel
       .find({ owner: req.params.id })
+      .populate("tags")
+      .populate("owner")
       .then((r) => res.send(r))
       .catch((err) => res.status(404).send("Noticia no encontrada"));
   } else {
