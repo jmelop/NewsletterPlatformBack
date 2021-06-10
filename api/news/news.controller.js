@@ -13,6 +13,7 @@ function getAllnews(req, res) {
   if (req.currentUser.role === "admin" || req.currentUser.role === "user") {
     newsModel
       .find()
+      .populate("tag")
       .populate("owner")
       .then((response) => {
         res.json(response);
@@ -29,6 +30,7 @@ function getnewById(req, res) {
     if (newId) {
       newsModel
         .findById(req.params.id)
+        .populate("tag")
         .populate("owner")
         .then((response) => {
           res.json(response);

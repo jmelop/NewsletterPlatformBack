@@ -23,10 +23,10 @@ function login(req, res) {
         res.status(400).send("Email o pasdword no válida");
       } else {
         if (!bcrypt.compareSync(password, r.password)) {
-          res.status(404).send("Email o pasdword no válida");
+          res.status(404).send("Email o password no válida");
         } else {
           const token = jwt.sign(
-            { email: r.email, role: r.role },
+            { email: r.email, role: r.role, id: r._id },
             process.env.TOKEN_PASSWORD
           );
 

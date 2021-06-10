@@ -21,6 +21,8 @@ function validAuth(req, res, next) {
 
 router.get("/", validAuth, userController.getAllUsers);
 
+router.get("/owner", validAuth, userController.getByOwnerId);
+
 router.get("/:id", validAuth, userController.getById);
 
 router.post("/", validAuth, userController.createUser);
@@ -31,6 +33,6 @@ router.delete("/:id", validAuth, userController.deleteUser);
 
 router.delete("/deleteSelf/:id", validAuth, userController.deleteSelfUser);
 
-router.patch("/updateTags/:id", validAuth, userController.editPatch);
+router.patch("/editself/:id", validAuth, userController.editSelf);
 
 module.exports = router;

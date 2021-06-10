@@ -25,7 +25,7 @@ router.get("/:id", validAuth, userController.getById);
 
 router.patch("/:id", validAuth, userController.editPatch);
 
-router.delete("/:id", validAuth, userController.deleteUser);
+router.patch("/editself/:id", validAuth, userController.editSelf);
 
 router.delete("/deleteSelf/:id", validAuth, userController.deleteSelfAdmin);
 

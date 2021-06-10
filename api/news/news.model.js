@@ -16,10 +16,7 @@ var newsSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    tag: {
-      type: Array,
-      required: [true, "Tag obligatorio"],
-    },
+    tag: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag" }],
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
