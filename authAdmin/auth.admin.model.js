@@ -32,8 +32,10 @@ var authSchema = mongoose.Schema(
       type: String,
       required: [true, "Password requerida"],
     },
-    /*     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag" }],
-     */
+    senddate: {
+      type: String,
+      default: "0 12 ? * FRI",
+    },
   },
   { timestamps: { createdAt: "createdAt" } }
 );
