@@ -1,24 +1,23 @@
-const userModel = require("./admin.model");
+const adminModel = require("./admin.model");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const axios = require("axios");
 
 module.exports = {
-  getAllUsers,
+  getAllAdmins,
   getById,
-  createUser,
   editPatch,
   deleteUser,
-  deleteSelfUser,
-  deleteTagUser,
+  deleteSelfAdmin,
 };
 
-function deleteTagUser(id) {
-  return userModel.updateMany({ tags: id }, { $pull: { tags: id } });
+function sendAdminId(id) {
+  return axios.get("localhost:3010/newadmin/" + id).then((r) => console.log(r));
 }
 
-function getAllUsers(req, res) {
+function getAllAdmins(req, res) {
   if (req.currentUser.role === "admin") {
-    userModel
+    adminModel
       .find()
       .then((response) => {
         res.json(response);
@@ -30,11 +29,11 @@ function getAllUsers(req, res) {
 }
 
 function getById(req, res) {
-  if (req.currentUser.role === "admin" || req.currentUser.role === "user") {
+  if (req.currentUser.role === "admin") {
     let userId = mongoose.Types.ObjectId.isValid(req.params.id);
 
     if (userId) {
-      userModel
+      adminModel
         .findById(req.params.id)
         .populate("tags")
         .then((r) => res.json(r))
@@ -47,44 +46,12 @@ function getById(req, res) {
   }
 }
 
-function createUser(req, res) {
-  var newUser = new userModel(req.body);
-
-  var error = newUser.validateSync();
-  if (!error) {
-    let passwordHash = bcrypt.hashSync(newUser.password, 4);
-    userModel
-      .create({
-        email: newUser.email,
-        password: passwordHash,
-        name: newUser.name,
-        role: newUser.role,
-        tags: newUser.tags,
-      })
-      .then((r) => {
-        res.json(r);
-      })
-      .catch((err) => {
-        if (err.keyValue.email) {
-          res.status(404).send("Email repetido");
-        } else {
-          res.status(500).send("Fallo en el servidor");
-        }
-      });
-  } else {
-    if (error.errors.email) {
-      res.status(403).send("email no valido");
-    } else {
-      res.status(400).send("Ha ocurrido un error");
-    }
-  }
-}
 function editPatch(req, res) {
-  if (req.currentUser.role === "admin" || req.currentUser.role === "user") {
-    let userId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (req.currentUser.role === "admin") {
+    let adminId = mongoose.Types.ObjectId.isValid(req.params.id);
 
-    if (userId) {
-      userModel
+    if (adminId) {
+      adminModel
         .findByIdAndUpdate(req.params.id, req.body)
         .then((r) => res.json(r))
         .catch((err) => res.status(500).json("Error en la base de datos"));
@@ -100,7 +67,7 @@ function deleteUser(req, res) {
   if (req.currentUser.role === "admin") {
     let userId = mongoose.Types.ObjectId.isValid(req.params.id);
     if (userId) {
-      userModel
+      adminModel
         .findByIdAndDelete(req.params.id)
         .then((r) => res.json(r))
         .catch((err) => res.status(500).json("Error en la base de datos"));
@@ -112,15 +79,15 @@ function deleteUser(req, res) {
   }
 }
 
-function deleteSelfUser(req, res) {
-  let userId = mongoose.Types.ObjectId.isValid(req.params.id);
+function deleteSelfAdmin(req, res) {
+  let adminId = mongoose.Types.ObjectId.isValid(req.params.id);
 
-  if (userId) {
-    userModel
+  if (adminId) {
+    adminModel
       .findById(req.params.id)
       .then((r) => {
         if (r.email === req.currentUser.email) {
-          userModel
+          adminModel
             .findByIdAndDelete(req.params.id)
             .then((r) => res.send("Eliminado con exito"));
         } else {
@@ -133,11 +100,4 @@ function deleteSelfUser(req, res) {
   } else {
     res.status(404).send("Ningun usuario encontrado");
   }
-}
-
-function deleteSelfTags(req, res) {
-  userModel.findById(req.params.id).then((r) => {
-    if (r.email === req.currentUser.email) {
-    }
-  });
 }

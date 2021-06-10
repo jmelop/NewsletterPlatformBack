@@ -1,8 +1,16 @@
 const authModel = require("./auth.admin.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 module.exports = { login, register };
+
+function sendAdminId(id) {
+  console.log("holllll");
+  return axios
+    .get("http://hermesduck.com:3010/newadmin/" + id)
+    .then((r) => console.log(r));
+}
 
 function login(req, res) {
   const { email, password } = req.body;
@@ -12,7 +20,7 @@ function login(req, res) {
       if (!r) {
         res.status(404).send("No existe ningun usuario con ese email");
       } else if (r.password == null) {
-        res.status(404).send("Email o pasdword no válida");
+        res.status(400).send("Email o pasdword no válida");
       } else {
         if (!bcrypt.compareSync(password, r.password)) {
           res.status(404).send("Email o pasdword no válida");
@@ -47,24 +55,23 @@ function register(req, res) {
         tags: newUser.tags,
       })
       .then((r) => {
+        sendAdminId(r._id);
         res.send(r);
       })
       .catch((err) => {
         if (err.keyValue.email) {
-          res.status(404).send("Email repetido");
+          res.status(400).send("Email repetido");
         } else if (err.keyValue.username) {
-          res.status(404).send("Username repetido");
+          res.status(400).send("Username repetido");
         } else {
           res.status(500).send("Fallo en el servidor");
         }
       });
   } else {
     if (error.errors.email) {
-      console.log("eu");
-      res.status(403).send("email no valido");
+      res.status(400).send("email no valido");
     } else if (error.errors.username) {
-      console.log("yee");
-      res.status(403).send("username necesario");
+      res.status(400).send("username necesario");
     }
   }
 }

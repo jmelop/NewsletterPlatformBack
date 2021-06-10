@@ -6,11 +6,13 @@ var usersSchema = mongoose.Schema(
       minLength: [2, "Nombre demasiado corto"],
       maxLength: [100, "Nombre demasiado largo"],
     },
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "admin",
-      required: [true, "owner requerido"],
-    },
+    owner: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "admin",
+        required: [true, "owner requerido"],
+      },
+    ],
 
     email: {
       type: String,

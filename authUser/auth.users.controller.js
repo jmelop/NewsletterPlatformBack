@@ -59,20 +59,20 @@ function register(req, res) {
               })
               .catch((err) => {
                 if (err.keyValue.email) {
-                  res.status(404).send("Email repetido");
+                  res.status(400).send("Email repetido");
                 } else {
                   res.status(500).send("Fallo en el servidor");
                 }
               });
           } else {
             if (error.errors.role) {
-              res.status(403).send("Rol no valido");
+              res.status(400).send("Rol no valido");
             }
             if (error.errors.email) {
-              res.status(403).send("email no valido");
+              res.status(400).send("email no valido");
             }
             if (error.errors.owner) {
-              res.status(403).send("owner necesario");
+              res.status(400).send("owner necesario");
             }
           }
         }
@@ -81,6 +81,6 @@ function register(req, res) {
         res.status(404).send("Owner no encontrado");
       });
   } else {
-    res.status(404).send("admin no valido");
+    res.status(400).send("Id no válido");
   }
 }

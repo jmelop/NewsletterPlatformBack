@@ -1,6 +1,7 @@
 const userModel = require("./users.model");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const { get } = require("../news/news.router");
 
 module.exports = {
   getAllUsers,
@@ -41,7 +42,7 @@ function getById(req, res) {
         .populate("tags")
         .populate("owner")
         .then((r) => res.json(r))
-        .catch((err) => res.status(500).json("Error en la base de datos"));
+        .catch((err) => res.status(500).json("Ha ocurrido un error"));
     } else {
       res.status(404).send("Ningun usuario encontrado");
     }
@@ -63,20 +64,21 @@ function createUser(req, res) {
         name: newUser.name,
         role: newUser.role,
         tags: newUser.tags,
+        owner: newUser.owner,
       })
       .then((r) => {
         res.json(r);
       })
       .catch((err) => {
         if (err.keyValue.email) {
-          res.status(404).send("Email repetido");
+          res.status(400).send("Email repetido");
         } else {
-          res.status(500).send("Fallo en el servidor");
+          res.status(500).send("Ha ocurrido un error");
         }
       });
   } else {
     if (error.errors.email) {
-      res.status(403).send("email no valido");
+      res.status(400).send("email no valido");
     } else {
       res.status(400).send("Ha ocurrido un error");
     }
@@ -128,7 +130,7 @@ function deleteSelfUser(req, res) {
             .then((r) => res.send("Eliminado con exito"));
         } else {
           res
-            .status(403)
+            .status(400)
             .send("El email actual no coincide con el email a eliminar");
         }
       })
@@ -137,10 +139,10 @@ function deleteSelfUser(req, res) {
     res.status(404).send("Ningun usuario encontrado");
   }
 }
-
+/* 
 function deleteSelfTags(req, res) {
   userModel.findById(req.params.id).then((r) => {
     if (r.email === req.currentUser.email) {
     }
   });
-}
+} */

@@ -19,18 +19,14 @@ function validAuth(req, res, next) {
   });
 }
 
-router.get("/", validAuth, userController.getAllUsers);
+router.get("/", validAuth, userController.getAllAdmins);
 
 router.get("/:id", validAuth, userController.getById);
-
-router.post("/", validAuth, userController.createUser);
 
 router.patch("/:id", validAuth, userController.editPatch);
 
 router.delete("/:id", validAuth, userController.deleteUser);
 
-router.delete("/deleteSelf/:id", validAuth, userController.deleteSelfUser);
-
-router.patch("/updateTags/:id", validAuth, userController.editPatch);
+router.delete("/deleteSelf/:id", validAuth, userController.deleteSelfAdmin);
 
 module.exports = router;
