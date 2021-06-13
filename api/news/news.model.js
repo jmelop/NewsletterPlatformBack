@@ -16,9 +16,11 @@ var newsSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    tag: {
-      type: Array,
-      required: [true, "Tag obligatorio"],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag", require: true }],
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "admin",
+      required: [true, "owner requerido"],
     },
   },
   { timestamps: { createdAt: "createdAt" } }

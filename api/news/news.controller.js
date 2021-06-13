@@ -7,78 +7,116 @@ module.exports = {
   getnewById,
   deletenew,
   editNew,
+  getByOwnerId,
 };
 
 function getAllnews(req, res) {
-  newsModel
-    .find()
-    .then((response) => {
-      res.json(response);
-    })
-    .catch((err) => res.status(500).json(err));
-}
-
-function getnewById(req, res) {
-  let newId = mongoose.Types.ObjectId.isValid(req.params.id);
-  if (newId) {
+  if (req.currentUser.role === "admin" || req.currentUser.role === "user") {
     newsModel
-      .findById(req.params.id)
+      .find()
+      .populate("tags")
+      .populate("owner")
       .then((response) => {
         res.json(response);
       })
       .catch((err) => res.status(500).json(err));
   } else {
-    res.status(404).send("Ningun new encontrado");
+    res.status(403).send("Rol no válido");
+  }
+}
+
+function getnewById(req, res) {
+  if (req.currentUser.role === "admin ") {
+    let newId = mongoose.Types.ObjectId.isValid(req.params.id);
+    if (newId) {
+      newsModel
+        .findById(req.params.id)
+        .populate("tags")
+        .populate("owner")
+        .then((response) => {
+          res.json(response);
+        })
+        .catch((err) => res.status(500).json(err));
+    } else {
+      res.status(404).send("Ningun new encontrado");
+    }
+  } else {
+    res.status(403).send("No eres admin");
   }
 }
 
 function createnew(req, res) {
-  var createNew = new newsModel(req.body);
-  var error = createNew.validateSync();
-  if (!error) {
-    createNew
-      .save()
-      .then((u) => {
-        res.json(u);
-      })
-      .catch((err) => res.status(500).json(err));
+  if (req.currentUser.role === "admin") {
+    var createNew = new newsModel(req.body);
+    var error = createNew.validateSync();
+    if (!error) {
+      createNew
+        .save()
+        .then((u) => {
+          res.json(u);
+        })
+        .catch((err) => res.status(500).json(err));
+    } else {
+      if (error.errors.tag) {
+        res.status(404).send("Tags obligatorios");
+      }
+      if (error.errors.title) {
+        res.status(404).send("Titulo obligatorios");
+      }
+      if (error.errors.body) {
+        res.status(404).send("body obligatorios");
+      }
+    }
   } else {
-    if (error.errors.tag) {
-      res.status(404).send("Tags obligatorios");
-    }
-    if (error.errors.title) {
-      res.status(404).send("Titulo obligatorios");
-    }
-    if (error.errors.body) {
-      res.status(404).send("body obligatorios");
-    }
+    res.status(403).send("No eres admin");
   }
 }
 
 function deletenew(req, res) {
-  let newId = mongoose.Types.ObjectId.isValid(req.params.id);
-  if (newId) {
-    newsModel
-      .findByIdAndDelete(req.params.id)
-      .then((u) => {
-        res.json(u);
-      })
-      .catch((err) => res.status(500).json(err));
+  if (req.currentUser.role === "admin") {
+    let newId = mongoose.Types.ObjectId.isValid(req.params.id);
+    if (newId) {
+      newsModel
+        .findByIdAndDelete(req.params.id)
+        .then((u) => {
+          res.json(u);
+        })
+        .catch((err) => res.status(500).json(err));
+    } else {
+      res.status(404).send("Ningun new encontrado");
+    }
   } else {
-    res.status(404).send("Ningun new encontrado");
+    res.status(403).send("No eres admin");
   }
 }
 
 function editNew(req, res) {
-  let newId = mongoose.Types.ObjectId.isValid(req.params.id);
-  if (newId) {
-    newsModel
-      .findByIdAndUpdate(req.params.id, req.body)
-      .then((u) => {
-        res.json(u);
-      })
-      .catch((err) => res.status(500).json(err));
+  if (req.currentUser.role === "admin") {
+    let newId = mongoose.Types.ObjectId.isValid(req.params.id);
+    if (newId) {
+      newsModel
+        .findByIdAndUpdate(req.params.id, req.body)
+        .then((u) => {
+          res.json(u);
+        })
+        .catch((err) => res.status(500).json(err));
+    } else {
+      res.status(404).send("Ningun new encontrado");
+    }
   } else {
-    res.status(404).send("Ningun new encontrado");
+    res.status(403).send("No eres admin");
+  }
+}
+
+function getByOwnerId(req, res) {
+  if (req.currentUser.role === "admin") {
+    newsModel
+      .find({ owner: req.params.id })
+      .populate("tags")
+      .populate("owner")
+      .then((r) => res.send(r))
+      .catch((err) => res.status(404).send("Noticia no encontrada"));
+  } else {
+    res.status(403).send("No eres admin");
   }
 }

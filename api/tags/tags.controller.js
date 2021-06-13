@@ -8,11 +8,13 @@ module.exports = {
   editTag,
   deleteTag,
   createTag,
+  getByOwnerId,
 };
 
 function getAllTags(req, res) {
   tagsModel
     .find()
+    .populate("owner")
     .then((r) => {
       res.json(r);
     })
@@ -24,6 +26,7 @@ function getTagById(req, res) {
   if (tagId) {
     tagsModel
       .findById(req.params.id)
+      .populate("owner")
       .then((r) => {
         res.json(r);
       })
@@ -73,5 +76,17 @@ function editTag(req, res) {
       .catch((err) => res.status(500).json(err));
   } else {
     res.status(404).send("Ningun tag encontrado");
+  }
+}
+
+function getByOwnerId(req, res) {
+  if (req.currentUser.role === "admin") {
+    tagsModel
+      .find({ owner: req.params.id })
+      .populate("owner")
+      .then((r) => res.send(r))
+      .catch((err) => res.status(404).send("tag no encontrado"));
+  } else {
+    res.status(403).send("No eres admin");
   }
 }

@@ -1,6 +1,7 @@
-const newsController = require("./news.controller");
-const router = require("express").Router();
+var router = require("express").Router();
 const jwt = require("jsonwebtoken");
+
+var userController = require("./admin.controller");
 
 function validAuth(req, res, next) {
   if (!req.headers.authorization) {
@@ -18,16 +19,14 @@ function validAuth(req, res, next) {
   });
 }
 
-router.get("/", validAuth, newsController.getAllnews);
+router.get("/", validAuth, userController.getAllAdmins);
 
-router.get("/owner/:id", validAuth, newsController.getByOwnerId);
+router.get("/:id", validAuth, userController.getById);
 
-router.get("/:id", validAuth, newsController.getnewById);
+router.patch("/:id", validAuth, userController.editPatch);
 
-router.post("/", validAuth, newsController.createnew);
+router.patch("/editself/:id", validAuth, userController.editSelf);
 
-router.patch("/:id", validAuth, newsController.editNew);
-
-router.delete("/:id", validAuth, newsController.deletenew);
+router.delete("/deleteSelf/:id", validAuth, userController.deleteSelfAdmin);
 
 module.exports = router;

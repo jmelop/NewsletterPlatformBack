@@ -11,14 +11,17 @@ function validAuth(req, res, next) {
   jwt.verify(token, process.env.TOKEN_PASSWORD, (err, data) => {
     if (err) {
       return res.status(403).send("Token invalido");
+    } else {
+      console.log(data);
+      req.currentUser = data;
+      next();
     }
-    console.log(data);
-    req.currentUser = data;
-    next();
   });
 }
 
 router.get("/", validAuth, userController.getAllUsers);
+
+router.get("/owner/:id", validAuth, userController.getByOwnerId);
 
 router.get("/:id", validAuth, userController.getById);
 
@@ -30,6 +33,6 @@ router.delete("/:id", validAuth, userController.deleteUser);
 
 router.delete("/deleteSelf/:id", validAuth, userController.deleteSelfUser);
 
-router.patch("/updateTags/:id", validAuth, userController.editPatch);
+router.patch("/editself/:id", validAuth, userController.editSelf);
 
 module.exports = router;

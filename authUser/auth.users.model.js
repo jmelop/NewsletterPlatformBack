@@ -1,17 +1,12 @@
 var mongoose = require("mongoose");
-var usersSchema = mongoose.Schema(
+
+var authSchema = mongoose.Schema(
   {
     name: {
       type: String,
       minLength: [2, "Nombre demasiado corto"],
       maxLength: [100, "Nombre demasiado largo"],
     },
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "admin",
-      required: [true, "owner requerido"],
-    },
-
     email: {
       type: String,
       unique: true,
@@ -23,19 +18,25 @@ var usersSchema = mongoose.Schema(
       },
       required: [true, "Email requerido"],
     },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "admin",
+      required: [true, "owner requerido"],
+    },
+
     role: {
       type: String,
-      enum: ["admin", "user"],
+      enum: ["user"],
       default: "user",
     },
     password: {
       type: String,
-      required: [true, "Password necesaria"],
+      required: [true, "Password requerida"],
     },
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag" }],
   },
   { timestamps: { createdAt: "createdAt" } }
 );
 
-var user = mongoose.model("user", usersSchema);
-module.exports = user;
+var auth = mongoose.model("users", authSchema);
+module.exports = auth;
