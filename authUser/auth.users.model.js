@@ -34,6 +34,10 @@ var authSchema = mongoose.Schema(
       required: [true, "Password requerida"],
     },
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag" }],
+    recoverToken: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: { createdAt: "createdAt" } }
 );
