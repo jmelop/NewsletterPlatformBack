@@ -34,7 +34,7 @@ var authSchema = mongoose.Schema(
     },
     senddate: {
       type: String,
-      default: "* * * * *",
+      default: "0 0 29 2 1",
     },
   },
   { timestamps: { createdAt: "createdAt" } }

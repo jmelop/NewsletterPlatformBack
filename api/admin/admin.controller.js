@@ -1,6 +1,7 @@
 const adminModel = require("./admin.model");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const axios = require("axios");
 
 module.exports = {
   getAllAdmins,
@@ -12,8 +13,9 @@ module.exports = {
 
 function settime(id) {
   return axios
-    .get(process.env.SEND_EMAIL_URL + "settime" + id)
-    .then((r) => console.log(r));
+    .get(process.env.SEND_EMAIL_URL + "settime/" + id)
+    .then((r) => console.log(r))
+    .catch((err) => console.log(err.message));
 }
 
 function getAllAdmins(req, res) {
@@ -58,7 +60,7 @@ function editPatch(req, res) {
           settime(r._id);
           res.json(r);
         })
-        .catch((err) => res.status(500).json("Error en la base de datos"));
+        .catch((err) => res.status(500).json(err));
     } else {
       res.status(404).send("Ningun usuario encontrado");
     }
@@ -81,9 +83,7 @@ function editSelf(req, res) {
                 settime(r._id);
                 res.json(r);
               })
-              .catch((err) =>
-                res.status(500).json("Error en la base de datos")
-              );
+              .catch((err) => console.log(err));
           } else {
             res
               .status(400)

@@ -7,7 +7,7 @@ module.exports = { login, register, forgotPassword, changePassword };
 
 function sendAdminId(id) {
   return axios
-    .get(process.env.SEND_EMAIL_URL + "newadmin" + id)
+    .get(process.env.SEND_EMAIL_URL + "newadmin/" + id)
     .then((r) => console.log(r))
     .catch((err) => console.log(err));
 }

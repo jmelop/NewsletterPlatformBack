@@ -10,7 +10,6 @@ router.post("/login", login);
 router.post("/register", register);
 
 router.post("/forgot", forgotPassword);
-
 router.post("/recover", changePassword);
 
 module.exports = router;
