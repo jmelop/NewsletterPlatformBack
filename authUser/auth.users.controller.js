@@ -97,15 +97,15 @@ function forgotPassword(req, res) {
         console.log(token);
         authUserModel
           .findByIdAndUpdate(r._id, { recoverToken: token }, { new: true })
-          .then((res) => {
+          .then((response) => {
             return axios
               .post(process.env.SEND_EMAIL_URL + "recover", {
                 recoverToken: token,
                 email: r.email,
                 name: r.name,
               })
-              .then((r) => {
-                res.send(r);
+              .then((r2) => {
+                res.send("Enviado");
               })
               .catch((err) => console.log(err));
           })
