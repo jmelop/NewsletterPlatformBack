@@ -1,9 +1,9 @@
-const authModel = require("./auth.admin.model");
+const authAdminModel = require("./auth.admin.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 require("dotenv").config();
-module.exports = { login, register };
+module.exports = { login, register, forgotPassword, changePassword };
 
 function sendAdminId(id) {
   return axios
@@ -14,7 +14,7 @@ function sendAdminId(id) {
 
 function login(req, res) {
   const { email, password } = req.body;
-  authModel
+  authAdminModel
     .findOne({ email })
     .then((r) => {
       if (!r) {
@@ -41,11 +41,11 @@ function login(req, res) {
 }
 
 function register(req, res) {
-  var newUser = new authModel(req.body);
+  var newUser = new authAdminModel(req.body);
   var error = newUser.validateSync();
   if (!error) {
     let passwordHash = bcrypt.hashSync(newUser.password, 4);
-    authModel
+    authAdminModel
       .create({
         username: newUser.username,
         email: newUser.email,
@@ -74,4 +74,69 @@ function register(req, res) {
       res.status(400).send("username necesario");
     }
   }
+}
+
+function forgotPassword(req, res) {
+  let emailReq = req.body.email;
+  authAdminModel
+    .findOne({ email: emailReq })
+    .then((r) => {
+      if (r == null) {
+        res.status(404).send("Email no encontrado");
+      } else {
+        const token = jwt.sign(
+          { email: r.email, date: new Date().getTime() },
+          process.env.TOKEN_PASSWORD
+        );
+        console.log(token);
+        authAdminModel
+          .findByIdAndUpdate(r._id, { recoverToken: token }, { new: true })
+          .then((res) => {
+            return axios
+              .post(process.env.SEND_EMAIL_URL + "recover", {
+                recoverToken: token,
+                email: r.email,
+                name: r.name,
+              })
+              .then((r) => {
+                res.send(r);
+              })
+              .catch((err) => console.log(err));
+          })
+          .catch((err) => console.log(err.message));
+      }
+    })
+    .catch((err) => console.log(err.message));
+}
+
+function changePassword(req, res) {
+  token = req.body.token;
+  let passwordHash = bcrypt.hashSync(req.body.password, 4);
+
+  jwt.verify(token, process.env.TOKEN_PASSWORD, (err, data) => {
+    if (err) {
+      return res.status(403).send("Token invalido");
+    } else {
+      const newDate = new Date().getTime();
+      const finalDate = newDate - data.date;
+
+      if (finalDate < 3600000) {
+        authAdminModel.findOne({ email: data.email }).then((r) => {
+          if (r.recoverToken === token) {
+            authAdminModel
+              .findOneAndUpdate(
+                { email: data.email },
+                { password: passwordHash }
+              )
+              .then((r) => res.send(r))
+              .catch((err) => console.log(err.message));
+          } else {
+            res.status(403).send("Token no coincide");
+          }
+        });
+      } else {
+        res.status(400).send("Has superado el tiempo de recuperación");
+      }
+    }
+  });
 }
